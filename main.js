@@ -11,7 +11,6 @@ async function getRandomMeal() {
         const ingridient = meal[`strIngredient${i}`]; 
         const measure = meal[`strMeasure${i}`]; 
         
-       
         if(ingridient && ingridient.trim() !== "") {
             ingridientsList += `<li>${ingridient} - ${measure}</li>`;
         }
@@ -25,7 +24,24 @@ async function getRandomMeal() {
       <p><strong>Instructions:</strong> ${meal.strInstructions}</p>
       <h3>Ingredients:</h3>
       <ul>${ingridientsList}</ul>
+      <button id="fvrtBtn" data-meal='${JSON.stringify(meal)}'>Add to Favorites</button>
+      ${meal.strYoutube ? `<p><a href="${meal.strYoutube}" target="_blank">Watch on YouTube</a></p>` : ""}
     `;
+
+    
+    document.getElementById("fvrtBtn").addEventListener("click", function() {
+        const mealData = JSON.parse(this.getAttribute('data-meal'));
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        const exists = favorites.find(item => item.idMeal === mealData.idMeal);
+        
+        if(!exists) {
+            favorites.push(mealData);
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+            alert("Added to favorites!");
+        } else {
+            alert("Already in favorites!");
+        }
+    });
 
   } catch (error) {
     console.error("Error fetching meal:", error);
