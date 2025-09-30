@@ -28,7 +28,6 @@ async function getRandomMeal() {
       ${meal.strYoutube ? `<p><a href="${meal.strYoutube}" target="_blank">Watch on YouTube</a></p>` : ""}
     `;
 
-    
     document.getElementById("fvrtBtn").addEventListener("click", function() {
         const mealData = JSON.parse(this.getAttribute('data-meal'));
         const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -48,4 +47,34 @@ async function getRandomMeal() {
   }
 }
 
+
+function viewFavorites() {
+    const favoritesContainer = document.getElementById("favoritesContainer");
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    
+    if(favorites.length === 0){
+        favoritesContainer.innerHTML = "<p>No favorites added yet.</p>";
+        return;
+    }
+    
+    
+    let favoritesHTML = "";
+    favorites.forEach(meal => {
+        favoritesHTML += `
+        <div style="margin-bottom:20px; border:1px solid #ddd; padding:10px;">
+            <h3>${meal.strMeal}</h3>
+            <img src="${meal.strMealThumb}" alt="${meal.strMeal}" width="200" />
+            <p><strong>Category:</strong> ${meal.strCategory}</p>
+            <p><strong>Area:</strong> ${meal.strArea}</p>
+             <p><strong>Instructions:</strong> ${meal.strInstructions}</p>
+
+        </div>
+        `;
+    });
+    
+    favoritesContainer.innerHTML = favoritesHTML;
+}
+
+
 document.getElementById("getMealBtn").addEventListener("click", getRandomMeal);
+document.getElementById("viewFavouritesBtn").addEventListener("click", viewFavorites);
