@@ -1,9 +1,29 @@
 async function getRandomMeal() {
   try {
-    const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
-    const data = await res.json();
-    const meal = data.meals[0];
-
+    const categorySelect = document.getElementById("mealCategory");
+    const category = categorySelect.value;
+    
+    if (category) {
+      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`);
+      const data = await res.json();
+      
+      if (!data.meals) {
+        alert(`No meals found for category: ${category}`);
+        return;
+      }
+      
+      const meals = data.meals;
+      const randomMeal = meals[Math.floor(Math.random() * meals.length)];
+      const detailRes = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${randomMeal.idMeal}`);
+      const detailData = await detailRes.json();
+      meal = detailData.meals[0];
+    } else {
+      const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
+      const data = await res.json();
+      meal = data.meals[0];
+    }
+    
+    
     const mealContainer = document.getElementById("mealContainer");
 
     let ingridientsList = "";
@@ -46,7 +66,6 @@ async function getRandomMeal() {
     console.error("Error fetching meal:", error);
   }
 }
-
 
 function viewFavorites() {
     const favoritesContainer = document.getElementById("favoritesContainer");
